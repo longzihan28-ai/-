@@ -1,0 +1,64 @@
+# ==================== 通用 ====================
+.DS_Store
+Thumbs.db
+*.log
+logs/
+.idea/
+.vscode/*
+!.vscode/extensions.json
+.trae/
+*.swp
+*~
+
+# ==================== 敏感信息 ====================
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.jks
+*.keystore
+application-local.yml
+application-local.yaml
+application-local.properties
+*credentials*
+!*credentials*.example
+
+# ==================== 前端 agent-front ====================
+node_modules/
+dist/
+dist-ssr/
+*.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# ==================== Java 后端 agent-back ====================
+target/
+build/
+out/
+.gradle/
+*.class
+*.jar
+*.war
+*.iml
+hs_err_pid*
+.mvn/wrapper/maven-wrapper.jar
+!gradle/wrapper/gradle-wrapper.jar
+
+# ==================== Python 智能体 agent-python ====================
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+.python-version
