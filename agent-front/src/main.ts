@@ -1,9 +1,10 @@
 import { createApp } from 'vue'
-import './style.css'
+import './styles/reset.css'    // 浏览器样式重置（最优先）
+import 'element-plus/dist/index.css'  // Element Plus 官方样式
+import './style.css'            // 项目全局样式（最后覆盖）
 import App from './App.vue'
 import router from './router'
 import ElementPlus from 'element-plus'
-import 'element-plus/dist/index.css'
 import * as ElementPlusIconsVue from "@element-plus/icons-vue"
 
 const app =createApp(App)
