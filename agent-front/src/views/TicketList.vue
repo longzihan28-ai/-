@@ -65,6 +65,7 @@
       :total="total"
       style="margin-top:16px"
       @size-change="onSearch"
+      @current-change="load"
     />
   </el-card>
 </template>
