@@ -15,9 +15,11 @@ export interface ChatParams {
   message: string
 }
 
-// 对话响应
+// 对话响应（后端实际返回 reply / toolCalls，兼容 replay / tool_calls）
 export interface ChatResult {
+  reply?: string
   replay?: string
+  toolCalls?: ChatToolCall[]
   tool_calls?: ChatToolCall[]
   finished?: boolean
 }

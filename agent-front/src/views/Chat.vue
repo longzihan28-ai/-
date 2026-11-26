@@ -225,8 +225,8 @@ const onSend = async () => {
     const res = await chat({ sessionId: sessionId.value, message: text })
     messages.value.push({
       role: 'assistant',
-      content: res.replay ?? '',
-      toolCalls: dedupeToolCalls(res.tool_calls || []),
+      content: res.reply ?? res.replay ?? '',
+      toolCalls: dedupeToolCalls(res.toolCalls ?? res.tool_calls ?? []),
       finished: res.finished
     })
   } catch {
