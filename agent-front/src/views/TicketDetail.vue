@@ -11,7 +11,7 @@
       <!-- 基本信息 -->
       <el-descriptions :column="2" border>
         <el-descriptions-item label="故障类型">
-          <el-tag>{{ categoryLabel[ticket.faultType] || ticket.faultType || '未识别' }}</el-tag>
+          <el-tag>{{ categoryLabel[ticket.faultType || ''] || ticket.faultType || '未识别' }}</el-tag>
         </el-descriptions-item>
         <el-descriptions-item label="状态">
           <el-select v-if="isAdmin" v-model="ticket.status" style="width:100%" @change="onSave">
@@ -90,8 +90,12 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 import { ElMessage } from 'element-plus'
+import { getTicket, updateTicket, type TicketDetail } from '../api/ticket'
+
+const route = useRoute()
 
 // 状态/分类 中文映射
 const statusLabel: Record<string, string> = {
@@ -115,48 +119,20 @@ const categoryLabel: Record<string, string> = {
   account: '账号'
 }
 
-// 管理员视角（演示写死）
+// 管理员视角
 const isAdmin = computed(() => true)
 
-// 工单类型（与后端接口对齐，similarTickets/similarKnowledge 后端返回 JSON 字符串）
-interface Ticket {
-  id: number
-  title: string
-  faultType: string
-  status: string
-  submitterId: number
-  createTime: string
-  description: string
-  resolution: string
-  aiSuggestion: string
-  similarTickets: string
-  similarKnowledge: string
-}
+// 工单详情，初始为空，由 load 从后端获取
+const ticket = ref<TicketDetail | null>(null)
 
-// 演示数据写死，不调用接口、不读取路由与 localStorage
-const ticket = ref<Ticket>({
-  id: 6,
-  title: '浏览器网页打不开/报错',
-  faultType: 'software',
-  status: 'PENDING',
-  submitterId: 1,
-  createTime: '2026-10-23T13:53:27',
-  description: '用户反馈打开浏览器后大部分网页无法正常加载，部分页面显示空白或"连接超时"提示。已尝试清除浏览器缓存和重启浏览器，问题依旧存在。涉及 Chrome 和 Edge 两个浏览器。',
-  resolution: '',
-  aiSuggestion: '根据故障描述，疑似网络 DNS 解析或浏览器代理设置异常。建议排查：1) 检查系统代理设置是否被意外修改；2) 使用 ipconfig /flushdns 刷新 DNS 缓存；3) 测试不同网络环境（手机热点）是否仍有问题，以区分是本机还是网络侧问题。',
-  similarTickets: JSON.stringify([
-    { id: 3, title: 'Chrome 打开页面一直转圈', score: 0.542357987322083, content: 'Chrome 浏览器打开任何网站都一直转圈，无法加载。重启后短暂恢复，几分钟后再次出现。' }
-  ]),
-  similarKnowledge: JSON.stringify([])
-})
-
-// 加载状态恒为 false（演示数据不需要加载）
-const loading = ref(false)
+// 请求期间置 true
+const loading = ref(true)
 
 // 相似工单：后端以 JSON 字符串返回，解析失败时返回空数组
 const similarTickets = computed(() => {
+  if (!ticket.value) return []
   try {
-    return JSON.parse(ticket.value.similarTickets) || []
+    return JSON.parse(ticket.value.similarTickets || '[]') || []
   } catch {
     return []
   }
@@ -164,15 +140,40 @@ const similarTickets = computed(() => {
 
 // 相似知识：后端以 JSON 字符串返回，解析失败时返回空数组
 const similarKnowledge = computed(() => {
+  if (!ticket.value) return []
   try {
-    return JSON.parse(ticket.value.similarKnowledge) || []
+    return JSON.parse(ticket.value.similarKnowledge || '[]') || []
   } catch {
     return []
   }
 })
 
-// 保存：演示数据写死，不调用接口
-const onSave = () => {
-  ElMessage.success('已保存')
+// 拉取工单详情
+const load = async () => {
+  loading.value = true
+  try {
+    const id = Number(route.params.id)
+    ticket.value = await getTicket(id)
+  } catch {
+    ElMessage.error('获取工单详情失败')
+  } finally {
+    loading.value = false
+  }
 }
+
+// 保存处理结果 / 状态变更
+const onSave = async () => {
+  if (!ticket.value) return
+  try {
+    await updateTicket(ticket.value.id, {
+      status: ticket.value.status,
+      resolution: ticket.value.resolution
+    })
+    ElMessage.success('已保存')
+  } catch {
+    ElMessage.error('保存工单失败')
+  }
+}
+
+onMounted(load)
 </script>

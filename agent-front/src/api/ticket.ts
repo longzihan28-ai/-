@@ -34,6 +34,12 @@ export interface TicketDetail extends TicketItem {
   similarTickets?: string
   similarKnowledge?: string
   resolution?: string
+  submitterId?: number
+}
+
+export interface UpdateTicketParams {
+  status?: string
+  resolution?: string
 }
 
 // 工单列表 —— 对应后端 GET /api/ticket
@@ -49,4 +55,9 @@ export function submitTicket(data: CreateTicketParams): Promise<TicketItem> {
 // 工单详情 —— 对应后端 GET /api/ticket/{id}
 export function getTicket(id: number): Promise<TicketDetail> {
   return request.get<TicketDetail>(`/ticket/${id}`)
+}
+
+// 更新工单 —— 对应后端 PUT /api/ticket/{id}
+export function updateTicket(id: number, data: UpdateTicketParams): Promise<TicketDetail> {
+  return request.put<TicketDetail>(`/ticket/${id}`, data)
 }

@@ -50,8 +50,8 @@
       </el-table-column>
       <el-table-column prop="createTime" label="提交时间" width="180" />
       <el-table-column label="操作" width="120">
-        <template #default>
-          <el-button size="small">详情</el-button>
+        <template #default="{ row }">
+          <el-button size="small" link type="primary" @click="$router.push('/ticket/' + row.id)">详情</el-button>
         </template>
       </el-table-column>
     </el-table>
