@@ -3,7 +3,7 @@
     <!-- 标题行：页面标题 + 新建工单 -->
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
       <h2 style="margin:0">工单列表</h2>
-      <el-button type="primary">+ 新建工单</el-button>
+      <el-button @click="$router.push('/ticket/submit')" type="primary">+ 新建工单</el-button>
     </div>
 
     <!-- 搜索条件：状态 + 提交时间范围 -->
