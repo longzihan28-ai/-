@@ -69,7 +69,7 @@
       </el-header>
 
       <!-- Main：主内容区 -->
-      <el-main style="background-color: #f0f2f5; padding: 0;">
+      <el-main style="background-color: #f0f2f5; padding: 20px;">
         <router-view />
       </el-main>
     </el-container>
