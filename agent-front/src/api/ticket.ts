@@ -21,7 +21,32 @@ export interface TicketPage {
   total: number
 }
 
-// 工单列表接口 —— 对应后端 GET /api/ticket
+export interface CreateTicketParams {
+  title: string
+  description: string
+  faultType?: string
+}
+
+// 工单详情：相似工单/知识以 JSON 字符串返回
+export interface TicketDetail extends TicketItem {
+  description?: string
+  aiSuggestion?: string
+  similarTickets?: string
+  similarKnowledge?: string
+  resolution?: string
+}
+
+// 工单列表 —— 对应后端 GET /api/ticket
 export function listTickets(params: TicketQuery): Promise<TicketPage> {
   return request.get<TicketPage>('/ticket', { params })
+}
+
+// 提交工单 —— 对应后端 POST /api/ticket
+export function submitTicket(data: CreateTicketParams): Promise<TicketItem> {
+  return request.post<TicketItem>('/ticket', data)
+}
+
+// 工单详情 —— 对应后端 GET /api/ticket/{id}
+export function getTicket(id: number): Promise<TicketDetail> {
+  return request.get<TicketDetail>(`/ticket/${id}`)
 }
