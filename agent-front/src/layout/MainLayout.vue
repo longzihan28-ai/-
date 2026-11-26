@@ -64,7 +64,7 @@
         <!-- 右侧：用户信息 + 退出 -->
         <div style="display: flex; align-items: center;">
           <el-tag type="info" effect="plain">{{ user.realName }}（{{ user.role }}）</el-tag>
-          <el-button type="text" style="margin-left: 12px;" @click="onLogout">退出登录</el-button>
+          <el-button link style="margin-left: 12px;" @click="onLogout">退出登录</el-button>
         </div>
       </el-header>
 
@@ -86,8 +86,8 @@ const route = useRoute()
 // 路由实例，用于菜单跳转与退出登录后跳转
 const router = useRouter()
 
-// 用户信息 —— 写死，禁止接口调用与 localStorage
-const user = { realName: '王五', role: 'admin' }
+// 用户信息 —— 从本地登录态读取，缺失时兜底避免空值崩溃
+const user = JSON.parse(localStorage.getItem('ticket_user') || 'null') || { realName: '', role: '' }
 
 // 是否管理员 —— 普通变量即可，不需要 computed
 const isAdmin = user.role === 'admin'
@@ -100,7 +100,9 @@ const onLogout = () => {
     type: 'warning'
   })
     .then(() => {
-      router.push('/login')
+        localStorage.removeItem('ticket_token')
+        localStorage.removeItem('ticket_user')
+        router.push('/login')
     })
     .catch(() => {})
 }
