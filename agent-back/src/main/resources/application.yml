@@ -1,0 +1,17 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+
+# 默认激活 local 配置；真实数据库账号密码写在 application-local.yml
+# （该文件已被根目录 .gitignore 排除，不会提交到远程）
+# 生产部署时通过环境变量 SPRING_PROFILES_ACTIVE=prod 切换
+spring:
+  profiles:
+    active: local
+  datasource:
+    # 数据库尚未创建，建好后请将库名与 application-local.yml 保持一致
+    url: ${DB_URL:jdbc:mysql://localhost:3306/agent_ticket?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false}
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:}
+    driver-class-name: com.mysql.cj.jdbc.Driver
